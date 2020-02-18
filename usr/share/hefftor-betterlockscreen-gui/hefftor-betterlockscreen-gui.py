@@ -42,11 +42,10 @@ class Main(Gtk.Window):
         # fb.clear()
         # for x in fb.get_child_at_index():
         #     print(x)
-        images = [x for x in fn.os.listdir("/usr/share/backgrounds/hefftorlinux/")]
+        images = [x for x in fn.os.listdir("/usr/share/backgrounds/hefftorlinux/")] # noqa
 
         for image in images:
-            pb = GdkPixbuf.Pixbuf().new_from_file_at_size("/usr/share/backgrounds/hefftorlinux/" + image,
-                                                          128, 128)
+            pb = GdkPixbuf.Pixbuf().new_from_file_at_size("/usr/share/backgrounds/hefftorlinux/" + image, 128, 128) # noqa
             pimage = Gtk.Image()
             pimage.set_from_pixbuf(pb)
 
@@ -54,7 +53,7 @@ class Main(Gtk.Window):
             print(image)
 
     def on_social_clicked(self, widget, event, link):
-        t = threading.Thread(target=self.weblink, args=(link,))
+        t = th.Thread(target=self.weblink, args=(link,))
         t.daemon = True
         t.start()
 

@@ -48,7 +48,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # self.create_flowbox(fb)
 
     scrolled.add(self.fb)
-    
+
     hbox3.pack_start(scrolled, True, True, 0)
 
     # ==========================================================
