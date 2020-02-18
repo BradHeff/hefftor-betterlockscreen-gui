@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Betterlockscreen GUI
+GenericName=Betterlockscreen GUI Changer App
+X-GNOME-FullName=Betterlockscreen GUI Changer App
+Comment=Application for Changing betterlockscreen
+Exec=/usr/local/bin/hefftor-betterlockscreen-gui
+Icon=hefftorlinux
+Terminal=false
+Type=Application
+Categories=GTK;Settings;Security;X-GNOME-Settings-Panel;X-GNOME-SystemSettings;X-Unity-Settings-Panel;X-XFCE-SettingsDialog;X-XFCE-SystemSettings;
+Keywords=hefftor;tool;twm;color;
+StartupNotify=true
