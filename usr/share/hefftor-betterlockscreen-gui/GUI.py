@@ -14,6 +14,9 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     hbox2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
     hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
+    hbox4 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+    hbox5 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+
     # =======================================================
     #                       App Notifications
     # =======================================================
@@ -35,9 +38,8 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     hbox1.pack_start(self.notification_revealer, True, False, 0)
 
     # ==========================================================
-    #                       PATREON
+    #                       IMAGES
     # ==========================================================
-    self.fb = Gtk.FlowBox()
     scrolled = Gtk.ScrolledWindow()
     scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
@@ -50,6 +52,13 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     scrolled.add(self.fb)
 
     hbox3.pack_start(scrolled, True, True, 0)
+
+    # ==========================================================
+    #                       BUTTON
+    # ==========================================================
+    self.btnset = Gtk.Button(label="Apply Image")
+    self.btnset.connect("clicked", self.on_apply_clicked)
+    hbox2.pack_end(self.btnset, False, False, 0)
 
     # ==========================================================
     #                       PATREON
@@ -74,9 +83,27 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     hbox2.pack_start(pE2, False, False, 0)  # Patreon
 
     # ==========================================================
+    #                       STATUS
+    # ==========================================================
+    self.status = Gtk.Label("")
+    hbox5.pack_start(self.status, True, False, 0)
+
+    # ==========================================================
+    #                       RESOLUTION
+    # ==========================================================
+    self.res = Gtk.Entry()
+    self.res.set_text("1920x1080")
+    label = Gtk.Label("Resolution")
+    hbox4.pack_start(label, False, False, 0)
+    hbox4.pack_start(self.res, False, False, 0)
+
+    hbox2.pack_start(hbox4, True, False, 0)
+
+    # ==========================================================
     #                       PACK TO WINDOW
     # ==========================================================
 
     self.vbox.pack_start(hbox1, False, False, 0)
     self.vbox.pack_start(hbox3, True, True, 0)
+    self.vbox.pack_start(hbox5, False, False, 0)
     self.vbox.pack_end(hbox2, False, False, 0)  # Patreon

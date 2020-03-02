@@ -2,6 +2,7 @@
 # =                  Author: Brad Heffernan                       =
 # =================================================================
 import os
+import subprocess
 from gi.repository import GLib
 from os.path import expanduser
 
@@ -22,7 +23,8 @@ def show_in_app_notification(self, message):
         GLib.source_remove(self.timeout_id)
         self.timeout_id = None
 
-    self.notification_label.set_text(message)
+    self.notification_label.set_markup("<span foreground=\"white\">" +
+                                       message + "</span>")
     self.notification_revealer.set_reveal_child(True)
     self.timeout_id = GLib.timeout_add(3000, timeOut, self)
 
