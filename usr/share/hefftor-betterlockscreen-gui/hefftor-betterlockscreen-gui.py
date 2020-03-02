@@ -72,9 +72,9 @@ class Main(Gtk.Window):
 
     def set_lockscreen(self):
         if len(self.res.get_text()) < 1:
-            command = ["betterlockscreens", "-u", self.image_path]
+            command = ["betterlockscreen", "-u", self.image_path]
         else:
-            command = ["betterlockscreens", "-u", self.image_path,
+            command = ["betterlockscreen", "-u", self.image_path,
                        "-r", self.res.get_text()]
         try:
             with fn.subprocess.Popen(command, bufsize=1, stdout=fn.subprocess.PIPE, universal_newlines=True) as p:
