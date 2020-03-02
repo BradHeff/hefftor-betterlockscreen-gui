@@ -72,19 +72,21 @@ class Main(Gtk.Window):
 
     def set_lockscreen(self):
         if len(self.res.get_text()) < 1:
-            command = ["betterlockscreen", "-u", self.image_path]
+            command = ["betterlockscreens", "-u", self.image_path]
         else:
-            command = ["betterlockscreen", "-u", self.image_path,
+            command = ["betterlockscreens", "-u", self.image_path,
                        "-r", self.res.get_text()]
-
-        with fn.subprocess.Popen(command, bufsize=1, stdout=fn.subprocess.PIPE, universal_newlines=True) as p:
-            for line in p.stdout:
-                GLib.idle_add(self.status.set_text, line.strip())
-
-        # fn.subprocess.call(command, shell=False)
-        fn.show_in_app_notification(self, "Lockscreen set successfully")
-        GLib.idle_add(self.btnset.set_sensitive, True)
-        GLib.idle_add(self.status.set_text, "")
+        try:
+            with fn.subprocess.Popen(command, bufsize=1, stdout=fn.subprocess.PIPE, universal_newlines=True) as p:
+                for line in p.stdout:
+                    GLib.idle_add(self.status.set_text, line.strip())
+            # fn.subprocess.call(command, shell=False)
+            fn.show_in_app_notification(self, "Lockscreen set successfully")
+            GLib.idle_add(self.btnset.set_sensitive, True)
+            GLib.idle_add(self.status.set_text, "")
+        except:  # noqa
+            GLib.idle_add(self.status.set_text, "ERROR: is betterlockscreen installed?")
+            GLib.idle_add(self.btnset.set_sensitive, True)
 
     def on_item_clicked(self, widget, data):
         for x in data:
