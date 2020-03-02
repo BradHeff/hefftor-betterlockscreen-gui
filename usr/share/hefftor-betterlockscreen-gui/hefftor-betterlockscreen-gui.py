@@ -27,6 +27,7 @@ class Main(Gtk.Window):
         self.image_path = None
 
         self.loc = Gtk.Entry()
+        self.status = Gtk.Label(label="")
         self.hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
                              spacing=10)
         scrolled = Gtk.ScrolledWindow()
@@ -96,41 +97,64 @@ class Main(Gtk.Window):
     def on_load_clicked(self, widget, fb):
         # self.fb.select_all()
 
-        # for x in self.fb.get_selected_children():
-        #     print(x)
-        #     self.fb.remove(x)
-        self.create_flowbox(self.loc.get_text())
-        # t = th.Thread(target=self.create_flowbox,
-        #               args=(self.fb, self.loc.get_text(),))
-        # t.daemon = True
-        # t.start()
-        # t.join()
+        for x in self.fb.get_children():
+            self.fb.remove(x)
+
+        t = th.Thread(target=self.create_flowbox,
+                      args=(self.loc.get_text(),))
+        t.daemon = True
+        t.start()
+
+    def on_browse_clicked(self, widget):
+        dialog = Gtk.FileChooserDialog(
+                                       title="Please choose a file",
+                                       action=Gtk.FileChooserAction.SELECT_FOLDER,)
+        dialog.set_current_folder(fn.home)
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Open",
+                           Gtk.ResponseType.OK)
+        dialog.connect("response", self.open_response_browse)
+
+        dialog.show()
+
+    def open_response_browse(self, dialog, response):
+        if response == Gtk.ResponseType.OK:
+            self.loc.set_text(dialog.get_filename())
+            dialog.destroy()
+        elif response == Gtk.ResponseType.CANCEL:
+            dialog.destroy()
 
     def create_flowbox(self, text):
         if len(text) < 1:
-            paths = "/usr/share/backgrounds/hefftorlinux/"
+            paths = "/usr/share/backgrounds/hefftorlinux"
             if not fn.os.path.isdir(paths):
-                paths = "/usr/share/backgrounds/arcolinux/"
+                paths = "/usr/share/backgrounds/arcolinux"
             if not fn.os.path.isdir(paths):
                 return 0
         else:
             paths = text
 
-        # try:
-        images = [x for x in fn.os.listdir(paths)] # noqa
+        if paths.endswith("/"):
+            paths = paths[:-1]
 
-        for image in images:
-            # fbchild = Gtk.FlowBoxChild()
-            pb = GdkPixbuf.Pixbuf().new_from_file_at_size(paths + image, 128, 128) # noqa
-            pimage = Gtk.Image()
-            pimage.set_name(paths + image)
-            pimage.set_from_pixbuf(pb)
-            # print(image)
-            # fbchild.add(pimage)
-            self.fb.add(pimage)
-        # except Exception as e:
-        #     print(e)
-            # print(image)
+        if not fn.os.path.isdir(paths):
+            GLib.idle_add(self.status.set_text, "That directory not found!")
+            return 0
+        try:
+            images = [x for x in fn.os.listdir(paths)] # noqa
+            GLib.idle_add(self.status.set_text, "Loading images...")
+            for image in images:
+                # fbchild = Gtk.FlowBoxChild()
+                pb = GdkPixbuf.Pixbuf().new_from_file_at_size(paths + "/" + image, 128, 128) # noqa
+                pimage = Gtk.Image()
+                pimage.set_name(paths + "/" + image)
+                pimage.set_from_pixbuf(pb)
+                # print(image)
+                # fbchild.add(pimage)
+                GLib.idle_add(self.fb.add,pimage)
+                pimage.show_all()
+        except Exception as e:
+            print(e)
+        GLib.idle_add(self.status.set_text, "")
 
     def on_social_clicked(self, widget, event, link):
         t = th.Thread(target=self.weblink, args=(link,))

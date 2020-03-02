@@ -47,17 +47,13 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     btnsearch = Gtk.Button(label="Load")
 
     btnsearch.connect("clicked", self.on_load_clicked, self.fb)
+    btnbrowse.connect("clicked", self.on_browse_clicked)
 
     btnsearch.set_size_request(130, 0)
     hbox6.pack_start(lbl, False, False, 10)
     hbox6.pack_start(self.loc, False, False, 0)
     hbox6.pack_start(btnbrowse, False, False, 5)
     hbox6.pack_end(btnsearch, False, False, 0)
-
-    # ==========================================================
-    #                       IMAGES
-    # ==========================================================
-
 
     # ==========================================================
     #                       BUTTON
@@ -104,7 +100,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
     #                       STATUS
     # ==========================================================
-    self.status = Gtk.Label("")
+    
     hbox5.pack_start(self.status, True, False, 0)
 
     # ==========================================================
@@ -123,7 +119,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
 
     self.vbox.pack_start(hbox1, False, False, 0)
-    # self.vbox.pack_start(hbox6, False, False, 0)
+    self.vbox.pack_start(hbox6, False, False, 0)
     self.vbox.pack_start(self.hbox3, True, True, 0)
     self.vbox.pack_start(hbox5, False, False, 0)
     self.vbox.pack_end(hbox2, False, False, 0)  # Patreon
