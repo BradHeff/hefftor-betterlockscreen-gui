@@ -12,10 +12,11 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
 
     hbox1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
     hbox2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-    hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
     hbox4 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
     hbox5 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+
+    hbox6 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
 
     # =======================================================
     #                       App Notifications
@@ -38,20 +39,25 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     hbox1.pack_start(self.notification_revealer, True, False, 0)
 
     # ==========================================================
+    #                       LOCATIONS
+    # ==========================================================
+    lbl = Gtk.Label("Enter Location")
+    self.loc.set_size_request(280, 0)
+    btnbrowse = Gtk.Button(label="...")
+    btnsearch = Gtk.Button(label="Load")
+
+    btnsearch.connect("clicked", self.on_load_clicked, self.fb)
+
+    btnsearch.set_size_request(130, 0)
+    hbox6.pack_start(lbl, False, False, 10)
+    hbox6.pack_start(self.loc, False, False, 0)
+    hbox6.pack_start(btnbrowse, False, False, 5)
+    hbox6.pack_end(btnsearch, False, False, 0)
+
+    # ==========================================================
     #                       IMAGES
     # ==========================================================
-    scrolled = Gtk.ScrolledWindow()
-    scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
-    self.fb.set_valign(Gtk.Align.START)
-    self.fb.set_max_children_per_line(6)
-    self.fb.set_selection_mode(Gtk.SelectionMode.SINGLE)
-    self.fb.connect("child-activated", self.on_item_clicked)
-    # self.create_flowbox(fb)
-
-    scrolled.add(self.fb)
-
-    hbox3.pack_start(scrolled, True, True, 0)
 
     # ==========================================================
     #                       BUTTON
@@ -65,22 +71,35 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
 
     pE2 = Gtk.EventBox()
+    pE3 = Gtk.EventBox()
 
     pbp2 = GdkPixbuf.Pixbuf().new_from_file_at_size(
         os.path.join(base_dir, 'images/patreon.png'), 28, 28)
     pimage2 = Gtk.Image().new_from_pixbuf(pbp2)
 
+    pbp3 = GdkPixbuf.Pixbuf().new_from_file_at_size(
+        os.path.join(base_dir, 'images/paypal.png'), 28, 28)
+    pimage3 = Gtk.Image().new_from_pixbuf(pbp3)
+
     pE2.add(pimage2)
+    pE3.add(pimage3)
 
     pE2.connect("button_press_event", self.on_social_clicked,
-                "https://t.me/arcolinux_d_b")
+                "https://www.patreon.com/hefftor")
+
+    pE3.connect("button_press_event", self.on_social_clicked,
+                "https://streamlabs.com/bradheffernan1")
 
     pE2.set_property("has-tooltip", True)
+    pE3.set_property("has-tooltip", True)
 
     pE2.connect("query-tooltip", self.tooltip_callback,
                 "Support Brad on Patreon")
+    pE3.connect("query-tooltip", self.tooltip_callback,
+                "Buy Brad a coffee")
 
     hbox2.pack_start(pE2, False, False, 0)  # Patreon
+    hbox2.pack_start(pE3, False, False, 0)  # Patreon
 
     # ==========================================================
     #                       STATUS
@@ -104,6 +123,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
 
     self.vbox.pack_start(hbox1, False, False, 0)
-    self.vbox.pack_start(hbox3, True, True, 0)
+    # self.vbox.pack_start(hbox6, False, False, 0)
+    self.vbox.pack_start(self.hbox3, True, True, 0)
     self.vbox.pack_start(hbox5, False, False, 0)
     self.vbox.pack_end(hbox2, False, False, 0)  # Patreon

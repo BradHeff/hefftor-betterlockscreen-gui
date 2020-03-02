@@ -25,13 +25,34 @@ class Main(Gtk.Window):
 
         self.timeout_id = None
         self.image_path = None
+
+        self.loc = Gtk.Entry()
+        self.hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
+                             spacing=10)
+        scrolled = Gtk.ScrolledWindow()
+        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+
         self.fb = Gtk.FlowBox()
+        self.fb.set_valign(Gtk.Align.START)
+        self.fb.set_max_children_per_line(6)
+        self.fb.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self.fb.connect("child-activated", self.on_item_clicked)
+        # self.create_flowbox(fb)
+
+        scrolled.add(self.fb)
+
+        self.hbox3.pack_start(scrolled, True, True, 0)
+
         splScr = Splash.splashScreen()
 
         while Gtk.events_pending():
             Gtk.main_iteration()
-
-        self.create_flowbox(self.fb)
+        # self.create_flowbox(self.loc.get_text())
+        t = th.Thread(target=self.create_flowbox,
+                      args=(self.loc.get_text(),))
+        t.daemon = True
+        t.start()
+        t.join()
 
         splScr.destroy()
 
@@ -56,7 +77,11 @@ class Main(Gtk.Window):
             command = ["betterlockscreen", "-u", self.image_path,
                        "-r", self.res.get_text()]
 
-        fn.subprocess.call(command, shell=False)
+        with fn.subprocess.Popen(command, bufsize=1, stdout=fn.subprocess.PIPE, universal_newlines=True) as p:
+            for line in p.stdout:
+                GLib.idle_add(self.status.set_text, line.strip())
+
+        # fn.subprocess.call(command, shell=False)
         fn.show_in_app_notification(self, "Lockscreen set successfully")
         GLib.idle_add(self.btnset.set_sensitive, True)
         GLib.idle_add(self.status.set_text, "")
@@ -66,20 +91,43 @@ class Main(Gtk.Window):
             self.image_path = x.get_name()
         # print(widget.get_selected_children())
 
-    def create_flowbox(self, fb):
-        paths = "/usr/share/backgrounds/hefftorlinux/"
-        if not fn.os.path.isdir(paths):
-            paths = "/usr/share/backgrounds/arcolinux/"
+    def on_load_clicked(self, widget, fb):
+        # self.fb.select_all()
 
+        # for x in self.fb.get_selected_children():
+        #     print(x)
+        #     self.fb.remove(x)
+        self.create_flowbox(self.loc.get_text())
+        # t = th.Thread(target=self.create_flowbox,
+        #               args=(self.fb, self.loc.get_text(),))
+        # t.daemon = True
+        # t.start()
+        # t.join()
+
+    def create_flowbox(self, text):
+        if len(text) < 1:
+            paths = "/usr/share/backgrounds/hefftorlinux/"
+            if not fn.os.path.isdir(paths):
+                paths = "/usr/share/backgrounds/arcolinux/"
+            if not fn.os.path.isdir(paths):
+                return 0
+        else:
+            paths = text
+
+        # try:
         images = [x for x in fn.os.listdir(paths)] # noqa
 
         for image in images:
+            # fbchild = Gtk.FlowBoxChild()
             pb = GdkPixbuf.Pixbuf().new_from_file_at_size(paths + image, 128, 128) # noqa
             pimage = Gtk.Image()
             pimage.set_name(paths + image)
             pimage.set_from_pixbuf(pb)
-
-            fb.add(pimage)
+            # print(image)
+            # fbchild.add(pimage)
+            self.fb.add(pimage)
+        # except Exception as e:
+        #     print(e)
             # print(image)
 
     def on_social_clicked(self, widget, event, link):
