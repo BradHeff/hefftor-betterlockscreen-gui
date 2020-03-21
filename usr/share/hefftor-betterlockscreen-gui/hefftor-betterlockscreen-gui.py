@@ -73,10 +73,11 @@ class Main(Gtk.Window):
 
     def set_lockscreen(self):
         if len(self.res.get_text()) < 1:
-            command = ["betterlockscreen", "-u", self.image_path]
+            command = ["betterlockscreen", "-u", self.image_path,
+                       "-b", self.blur.get_text()]
         else:
             command = ["betterlockscreen", "-u", self.image_path,
-                       "-r", self.res.get_text()]
+                       "-r", self.res.get_text(), "-b", self.blur.get_text()]
         try:
             with fn.subprocess.Popen(command, bufsize=1, stdout=fn.subprocess.PIPE, universal_newlines=True) as p:
                 for line in p.stdout:
@@ -140,7 +141,8 @@ class Main(Gtk.Window):
             GLib.idle_add(self.status.set_text, "That directory not found!")
             return 0
         try:
-            images = [x for x in fn.os.listdir(paths)] # noqa
+            ext = [".png", ".jpg", ".jpeg"]
+            images = [x for x in fn.os.listdir(paths) for j in ext if j in x.lower()] # noqa
             GLib.idle_add(self.status.set_text, "Loading images...")
             for image in images:
                 # fbchild = Gtk.FlowBoxChild()

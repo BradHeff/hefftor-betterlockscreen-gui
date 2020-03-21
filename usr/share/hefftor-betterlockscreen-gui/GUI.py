@@ -17,6 +17,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     hbox5 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
     hbox6 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+    hbox7 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
     # =======================================================
     #                       App Notifications
@@ -108,11 +109,28 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
     self.res = Gtk.Entry()
     self.res.set_text("1920x1080")
+    self.res.set_width_chars(True)
+    self.res.set_size_request(100, 0)
     label = Gtk.Label("Resolution")
     hbox4.pack_start(label, False, False, 0)
     hbox4.pack_start(self.res, False, False, 0)
 
     hbox2.pack_start(hbox4, True, False, 0)
+
+    # ==========================================================
+    #                       RESOLUTION
+    # ==========================================================
+    self.blur = Gtk.Entry()
+    self.blur.set_text("1.0")
+    self.blur.set_max_length(4)
+    self.blur.set_width_chars(True)
+    self.blur.set_size_request(67, 0)
+    label = Gtk.Label("Blur intensity")
+
+    hbox7.pack_start(label, False, False, 0)
+    hbox7.pack_start(self.blur, False, False, 0)
+
+    hbox2.pack_start(hbox7, True, False, 0)
 
     # ==========================================================
     #                       PACK TO WINDOW
