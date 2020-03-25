@@ -26,6 +26,14 @@ class Main(Gtk.Window):
         self.timeout_id = None
         self.image_path = None
 
+        if not fn.os.path.isdir(fn.config):
+            fn.os.mkdir(fn.config)
+
+        if not fn.os.path.isfile(fn.config + fn.settings):
+            with open(fn.config + fn.settings, "w") as f:
+                f.write("path=")
+                f.close()
+
         self.loc = Gtk.Entry()
         self.status = Gtk.Label(label="")
         self.hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
@@ -120,19 +128,24 @@ class Main(Gtk.Window):
     def open_response_browse(self, dialog, response):
         if response == Gtk.ResponseType.OK:
             self.loc.set_text(dialog.get_filename())
+            with open(fn.config + fn.settings, "w") as f:
+                f.write("path=" + dialog.get_filename())
+                f.close()
             dialog.destroy()
         elif response == Gtk.ResponseType.CANCEL:
             dialog.destroy()
 
     def create_flowbox(self, text):
-        if len(text) < 1:
-            paths = "/usr/share/backgrounds/hefftorlinux"
-            if not fn.os.path.isdir(paths):
-                paths = "/usr/share/backgrounds/arcolinux"
-            if not fn.os.path.isdir(paths):
-                return 0
-        else:
-            paths = text
+        paths = fn.get_saved_path()
+        if len(paths) < 1:
+            if len(text) < 1:
+                paths = "/usr/share/backgrounds/hefftorlinux"
+                if not fn.os.path.isdir(paths):
+                    paths = "/usr/share/backgrounds/arcolinux"
+                if not fn.os.path.isdir(paths):
+                    return 0
+            else:
+                paths = text
 
         if paths.endswith("/"):
             paths = paths[:-1]

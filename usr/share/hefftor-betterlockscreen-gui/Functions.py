@@ -8,7 +8,8 @@ from os.path import expanduser
 
 home = expanduser("~")
 base_dir = os.path.dirname(os.path.realpath(__file__))
-
+config = home + "/.config/hefftor-betterlockscreen-gui/"
+settings = "settings.conf"
 # ================================================
 #                   GLOBALS
 # ================================================
@@ -16,6 +17,21 @@ base_dir = os.path.dirname(os.path.realpath(__file__))
 # ================================================
 #               NOTIFICATIONS
 # ================================================
+
+
+def _get_position(lists, string):
+    nlist = [x for x in lists if string in x]
+    position = lists.index(nlist[0])
+    return position
+
+
+def get_saved_path():
+    with open(config + settings, "r") as f:
+        lines = f.readlines()
+        f.close()
+    pos = _get_position(lines, "path=")
+
+    return lines[pos].split("=")[1].strip()
 
 
 def show_in_app_notification(self, message):
