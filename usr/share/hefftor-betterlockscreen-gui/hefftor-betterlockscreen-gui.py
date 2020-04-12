@@ -81,7 +81,7 @@ class Main(Gtk.Window):
             t.start()
 
     def set_lockscreen(self):
-        if len(self.res.get_text()) < 1:
+        if len(self.res.get_active_text()) < 1:
             command = ["betterlockscreen", "-u", self.image_path,
                        "-b", str(int(self.blur.get_value())/100)]
         else:
