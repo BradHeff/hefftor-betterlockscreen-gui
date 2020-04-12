@@ -33,8 +33,9 @@ class Main(Gtk.Window):
             with open(fn.config + fn.settings, "w") as f:
                 f.write("path=")
                 f.close()
-
+        
         self.loc = Gtk.Entry()
+        self.search = Gtk.Entry()
         self.status = Gtk.Label(label="")
         self.hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
                              spacing=10)
@@ -65,8 +66,8 @@ class Main(Gtk.Window):
 
         splScr.destroy()
 
-        GUI.GUI(self, Gtk, GdkPixbuf, Gdk, th)
-
+        GUI.GUI(self, Gtk, GdkPixbuf, Gdk, th, fn)
+        print(str(int(self.blur.get_value())/100))
     def on_apply_clicked(self, widget):
 
         if self.image_path is None:
@@ -82,10 +83,10 @@ class Main(Gtk.Window):
     def set_lockscreen(self):
         if len(self.res.get_text()) < 1:
             command = ["betterlockscreen", "-u", self.image_path,
-                       "-b", self.blur.get_text()]
+                       "-b", str(int(self.blur.get_value())/100)]
         else:
             command = ["betterlockscreen", "-u", self.image_path,
-                       "-r", self.res.get_text(), "-b", self.blur.get_text()]
+                       "-r", self.res.get_active_text(), "-b", str(int(self.blur.get_value())/100)]
         try:
             with fn.subprocess.Popen(command, bufsize=1, stdout=fn.subprocess.PIPE, universal_newlines=True) as p:
                 for line in p.stdout:
@@ -104,6 +105,18 @@ class Main(Gtk.Window):
         # print(widget.get_selected_children())
 
     def on_load_clicked(self, widget, fb):
+        # self.fb.select_all()
+        self.search.set_text("")
+
+        for x in self.fb.get_children():
+            self.fb.remove(x)
+
+        t = th.Thread(target=self.create_flowbox,
+                      args=(self.loc.get_text(),))
+        t.daemon = True
+        t.start()
+
+    def on_search_clicked(self, widget, fb):
         # self.fb.select_all()
 
         for x in self.fb.get_children():
@@ -155,11 +168,11 @@ class Main(Gtk.Window):
             return 0
         try:
             ext = [".png", ".jpg", ".jpeg"]
-            images = [x for x in fn.os.listdir(paths) for j in ext if j in x.lower()] # noqa
+            images = [x for x in fn.os.listdir(paths) for j in ext if j in x.lower() if self.search.get_text().lower() in x.lower()] # noqa
             GLib.idle_add(self.status.set_text, "Loading images...")
             for image in images:
                 # fbchild = Gtk.FlowBoxChild()
-                pb = GdkPixbuf.Pixbuf().new_from_file_at_size(paths + "/" + image, 128, 128) # noqa
+                pb = GdkPixbuf.Pixbuf().new_from_file_at_size(paths + "/" + image, 328, 328) # noqa
                 pimage = Gtk.Image()
                 pimage.set_name(paths + "/" + image)
                 pimage.set_from_pixbuf(pb)

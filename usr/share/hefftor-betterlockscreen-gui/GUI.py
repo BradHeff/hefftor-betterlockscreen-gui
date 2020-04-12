@@ -5,7 +5,7 @@
 from Functions import base_dir, os
 
 
-def GUI(self, Gtk, GdkPixbuf, Gdk, th):
+def GUI(self, Gtk, GdkPixbuf, Gdk, th, fn):
 
     self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
     self.add(self.vbox)
@@ -18,6 +18,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
 
     hbox6 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     hbox7 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+    hbox8 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
     # =======================================================
     #                       App Notifications
@@ -55,6 +56,20 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     hbox6.pack_start(self.loc, False, False, 0)
     hbox6.pack_start(btnbrowse, False, False, 5)
     hbox6.pack_end(btnsearch, False, False, 0)
+
+    # ==========================================================
+    #                       SEARCH
+    # ==========================================================
+    lblS = Gtk.Label("Search")
+    self.search.set_size_request(180, 0)
+    btnsearcher = Gtk.Button(label="Search")
+
+    btnsearcher.connect("clicked", self.on_search_clicked, self.fb)    
+
+    btnsearcher.set_size_request(130, 0)
+    hbox8.pack_end(btnsearcher, False, False, 0)
+    hbox8.pack_end(self.search, False, False, 0)
+    hbox8.pack_end(lblS, False, False, 10)
 
     # ==========================================================
     #                       BUTTON
@@ -107,9 +122,12 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
     #                       RESOLUTION
     # ==========================================================
-    self.res = Gtk.Entry()
-    self.res.set_text("1920x1080")
-    self.res.set_width_chars(True)
+    self.res = Gtk.ComboBoxText()
+    for x in fn.resolutions:
+        self.res.append_text(x)
+    self.res.set_active(12)
+    # self.res.set_text("1920x1080")
+    # self.res.set_width_chars(True)
     self.res.set_size_request(100, 0)
     label = Gtk.Label("Resolution")
     hbox4.pack_start(label, False, False, 0)
@@ -120,11 +138,16 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
     # ==========================================================
     #                       RESOLUTION
     # ==========================================================
-    self.blur = Gtk.Entry()
-    self.blur.set_text("1.0")
-    self.blur.set_max_length(4)
-    self.blur.set_width_chars(True)
-    self.blur.set_size_request(67, 0)
+    ad1 = Gtk.Adjustment(100, 0, 100, 1, 100, 0)
+
+    self.blur = Gtk.Scale(
+        orientation=Gtk.Orientation.HORIZONTAL, adjustment=ad1)
+    self.blur.set_digits(0)
+    self.blur.set_hexpand(True)
+    self.blur.set_draw_value(True)
+    # self.blur.set_has_origin(True)
+    self.blur.set_size_request(100, 0)
+    self.blur.set_valign(Gtk.Align.START)
     label = Gtk.Label("Blur intensity")
 
     hbox7.pack_start(label, False, False, 0)
@@ -138,6 +161,7 @@ def GUI(self, Gtk, GdkPixbuf, Gdk, th):
 
     self.vbox.pack_start(hbox1, False, False, 0)
     self.vbox.pack_start(hbox6, False, False, 0)
+    self.vbox.pack_start(hbox8, False, False, 0)
     self.vbox.pack_start(self.hbox3, True, True, 0)
     self.vbox.pack_start(hbox5, False, False, 0)
     self.vbox.pack_end(hbox2, False, False, 0)  # Patreon
