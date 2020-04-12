@@ -67,7 +67,8 @@ class Main(Gtk.Window):
         splScr.destroy()
 
         GUI.GUI(self, Gtk, GdkPixbuf, Gdk, th, fn)
-        print(str(int(self.blur.get_value())/100))
+        # print(str(int(self.blur.get_value())/100))
+
     def on_apply_clicked(self, widget):
 
         if self.image_path is None:
