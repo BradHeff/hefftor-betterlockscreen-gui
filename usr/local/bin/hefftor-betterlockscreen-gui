@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-python3 /usr/share/hefftor-betterlockscreen-gui/hefftor-betterlockscreen-gui.py
+/usr/share/hefftor-betterlockscreen-gui/hefftor_betterlockscreen_gui
